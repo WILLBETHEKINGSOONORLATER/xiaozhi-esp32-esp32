@@ -40,8 +40,7 @@ jobs:
           EVENT_NAME="${{ github.event_name }}"
 
           if [[ "$EVENT_NAME" == "push" ]]; then
-                        FILTERED=$(echo "$ALL_VARIANTS" | jq -c '[.[] | select(.board == "waveshare-esp32-s3-cam-2")]')
-            echo "variants=$FILTERED" >> $GITHUB_OUTPUT
+                                  echo "variants=$ALL_VARIANTS" >> $GITHUB_OUTPUT
 
             exit 0
           fi
