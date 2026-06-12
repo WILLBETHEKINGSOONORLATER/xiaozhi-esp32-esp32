@@ -151,7 +151,7 @@ Other client projects using the XiaoZhi communication protocol:
 - [QuecPython/solution-xiaozhiAI](https://github.com/QuecPython/solution-xiaozhiAI) QuecPython firmware by Quectel
 
 Custom Assets Tools:
-
+ 
 - [78/xiaozhi-assets-generator](https://github.com/78/xiaozhi-assets-generator) Custom Assets Generator (Wake words, fonts, emojis, backgrounds)
 
 ## About the Project
