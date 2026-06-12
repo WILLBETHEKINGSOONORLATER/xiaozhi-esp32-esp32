@@ -71,8 +71,10 @@ jobs:
             fi
           done <<< "$CHANGED"
 
-          if [[ "$NEED_ALL" -eq 1 ]]; then
-            echo "variants=$ALL_VARIANTS" >> $GITHUB_OUTPUT
+                    if [[ "$NEED_ALL" -eq 1 ]]; then
+            FILTERED=$(echo "$ALL_VARIANTS" | jq -c '[.[] | select(.name | test("waveshare-esp32-s3-cam"))]')
+            echo "variants=$FILTERED" >> $GITHUB_OUTPUT
+
           else
             if [[ ${#AFFECTED[@]} -eq 0 ]]; then
               echo "variants=[]" >> $GITHUB_OUTPUT
