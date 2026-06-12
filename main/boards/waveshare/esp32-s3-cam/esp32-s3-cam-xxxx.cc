@@ -114,7 +114,10 @@ private:
         ESP_ERROR_CHECK(spi_bus_initialize(SPI2_HOST, &buscfg, SPI_DMA_CH_AUTO));
     }
 
-        void InitializeSt7789Display() {
+            void InitializeSt7789Display() {
+        return;
+        esp_lcd_panel_io_handle_t panel_io = nullptr;
+
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
         // 液晶屏控制IO初始化
