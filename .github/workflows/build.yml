@@ -41,7 +41,8 @@ jobs:
 
           # push 到 main 分支，编译全部变体
           if [[ "$EVENT_NAME" == "push" ]]; then
-            echo "variants=$ALL_VARIANTS" >> $GITHUB_OUTPUT
+            echo "variants=$(echo $ALL_VARIANTS | python3 -c 'import sys,json; d=json.load(sys.stdin); print(json.dumps([x for x in d if \"waveshare-esp32-s3-cam\" in x]))')" >> $GITHUB_OUTPUT
+
             exit 0
           fi
 
