@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - ci/* # for ci test
+      - ci/*
   pull_request:
     branches:
       - main
@@ -39,20 +39,15 @@ jobs:
         run: |
           EVENT_NAME="${{ github.event_name }}"
 
-          # push 到 main 分支，编译全部变体
           if [[ "$EVENT_NAME" == "push" ]]; then
-            echo "variants=$(echo $ALL_VARIANTS | python3 -c 'import sys,json; d=json.load(sys.stdin); print(json.dumps([x for x in d if \"waveshare-esp32-s3-cam\" in x]))')" >> $GITHUB_OUTPUT
-
+            echo "variants=$ALL_VARIANTS" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # pull_request 场景
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
           HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-          echo "Base: $BASE_SHA, Head: $HEAD_SHA"
 
           CHANGED=$(git diff --name-only $BASE_SHA $HEAD_SHA || true)
-          echo -e "Changed files:\n$CHANGED"
 
           NEED_ALL=0
           declare -A AFFECTED
@@ -60,21 +55,17 @@ jobs:
             if [[ "$file" == main/* && "$file" != main/boards/* ]]; then
               NEED_ALL=1
             fi
-
             if [[ "$file" == main/boards/common/* ]]; then
               NEED_ALL=1
             fi
-
             if [[ "$file" == main/boards/* ]]; then
               board=$(echo "$file" | cut -d '/' -f3)
               AFFECTED[$board]=1
             fi
           done <<< "$CHANGED"
 
-                    if [[ "$NEED_ALL" -eq 1 ]]; then
-            FILTERED=$(echo "$ALL_VARIANTS" | jq -c '[.[] | select(.name | test("waveshare-esp32-s3-cam"))]')
-            echo "variants=$FILTERED" >> $GITHUB_OUTPUT
-
+          if [[ "$NEED_ALL" -eq 1 ]]; then
+            echo "variants=$ALL_VARIANTS" >> $GITHUB_OUTPUT
           else
             if [[ ${#AFFECTED[@]} -eq 0 ]]; then
               echo "variants=[]" >> $GITHUB_OUTPUT
@@ -90,7 +81,7 @@ jobs:
     needs: prepare
     if: ${{ needs.prepare.outputs.variants != '[]' }}
     strategy:
-      fail-fast: false  # 单个变体失败不影响其它变体
+      fail-fast: false
       matrix:
         include: ${{ fromJson(needs.prepare.outputs.variants) }}
     runs-on: ubuntu-latest
@@ -112,3 +103,4 @@ jobs:
           name: xiaozhi_${{ matrix.full_name }}_${{ github.sha }}
           path: build/merged-binary.bin
           if-no-files-found: error
+
