@@ -102,7 +102,8 @@ private:
         //custom_io_expander_set_pwm(io_expander,100);
     }
 
-    void InitializeSpi() {
+        void InitializeSpi() {
+        return;
         spi_bus_config_t buscfg = {};
         buscfg.mosi_io_num = DISPLAY_MOSI_PIN;
         buscfg.miso_io_num = GPIO_NUM_NC;
@@ -113,7 +114,7 @@ private:
         ESP_ERROR_CHECK(spi_bus_initialize(SPI2_HOST, &buscfg, SPI_DMA_CH_AUTO));
     }
 
-    void InitializeSt7789Display() {
+        void InitializeSt7789Display() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
         // 液晶屏控制IO初始化
@@ -270,8 +271,10 @@ public:
             return &audio_codec;
     }
 
-    virtual Display* GetDisplay() override {
-        return display_;
+        virtual Display* GetDisplay() override {
+        static Display no_display;
+        return &no_display;
+    }
     }
     
     virtual Camera* GetCamera() override {
